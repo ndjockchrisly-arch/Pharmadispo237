@@ -1,0 +1,2069 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PharmDispo237 — Disponibilité des Médicaments & Prédiction IA au Cameroun</title>
+  <meta name="description" content="Plateforme intelligente de suivi des stocks en pharmacie et de prédiction des pénuries de médicaments au Cameroun.">
+  <meta property="og:title" content="PharmDispo237 — Disponibilité des Médicaments & Prédiction IA">
+  <meta property="og:description" content="Plateforme intelligente de suivi des stocks en pharmacie et de prédiction des pénuries de médicaments au Cameroun.">
+  <meta property="og:type" content="website">
+
+  <!-- Google Fonts: Space Grotesk & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       VARIABLES & DESIGN TOKENS
+       ========================================================================== */
+    :root {
+      --bg-neutral: #F6F7F3;
+      --surface-white: #FFFFFF;
+      --text-main: #142019;
+      --text-muted: #4B564F;
+      --primary: #0B6E4F;
+      --primary-dark: #084E38;
+      --primary-light: #EBF4F0;
+      --accent-amber: #E2A33D;
+      --accent-amber-light: #FCF5E8;
+      --alert-red: #C1443A;
+      --alert-red-light: #FBF0EF;
+      --border-color: #DFE5DE;
+      --border-focus: #0B6E4F;
+      
+      --font-display: 'Space Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      --radius-pill: 9999px;
+      
+      --shadow-subtle: 0 1px 3px rgba(20, 32, 25, 0.04), 0 6px 16px rgba(20, 32, 25, 0.03);
+      --shadow-hover: 0 4px 6px -1px rgba(20, 32, 25, 0.05), 0 12px 24px -2px rgba(20, 32, 25, 0.08);
+      --shadow-elevated: 0 14px 34px -4px rgba(20, 32, 25, 0.1);
+      
+      --transition-fast: 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+      --transition-smooth: 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* ==========================================================================
+       BASE & RESET
+       ========================================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+      background-color: var(--bg-neutral);
+      color: var(--text-main);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: var(--font-body);
+      line-height: 1.6;
+      background-color: var(--bg-neutral);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    h1, h2, h3, h4, .font-heading {
+      font-family: var(--font-display);
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+    }
+
+    p {
+      color: var(--text-muted);
+      max-width: 68ch;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+      transition: color var(--transition-fast);
+    }
+
+    button, input, select, textarea {
+      font-family: inherit;
+      font-size: 1rem;
+    }
+
+    /* Accessibility Focus States */
+    :focus-visible {
+      outline: 2.5px solid var(--border-focus);
+      outline-offset: 3px;
+    }
+
+    /* Layout Utility */
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: 24px;
+      padding-right: 24px;
+    }
+
+    .section-spacing {
+      padding-top: 88px;
+      padding-bottom: 88px;
+    }
+
+    /* ==========================================================================
+       BUTTONS & CHIPS
+       ========================================================================== */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 24px;
+      font-weight: 600;
+      font-size: 0.9375rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color var(--transition-fast), 
+                  border-color var(--transition-fast), 
+                  box-shadow var(--transition-fast), 
+                  transform var(--transition-fast);
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: #FFFFFF;
+      border-color: var(--primary);
+      box-shadow: 0 2px 4px rgba(11, 110, 79, 0.16);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+      border-color: var(--primary-dark);
+      box-shadow: 0 4px 10px rgba(11, 110, 79, 0.22);
+    }
+
+    .btn-secondary {
+      background-color: var(--surface-white);
+      color: var(--text-main);
+      border-color: var(--border-color);
+      box-shadow: var(--shadow-subtle);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      background-color: var(--primary-light);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+
+    .badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+    }
+
+    .badge-available {
+      background-color: var(--primary-light);
+      color: var(--primary-dark);
+      border: 1px solid rgba(11, 110, 79, 0.2);
+    }
+    .badge-available .badge-dot { background-color: var(--primary); }
+
+    .badge-warning {
+      background-color: var(--accent-amber-light);
+      color: #925C08;
+      border: 1px solid rgba(226, 163, 61, 0.3);
+    }
+    .badge-warning .badge-dot { background-color: var(--accent-amber); }
+
+    .badge-danger {
+      background-color: var(--alert-red-light);
+      color: var(--alert-red);
+      border: 1px solid rgba(193, 68, 58, 0.25);
+    }
+    .badge-danger .badge-dot { background-color: var(--alert-red); }
+
+    /* ==========================================================================
+       HEADER & NAVIGATION
+       ========================================================================== */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background-color: rgba(246, 247, 243, 0.94);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      transition: background-color var(--transition-fast), box-shadow var(--transition-fast);
+    }
+
+    .nav-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 72px;
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-main);
+      text-decoration: none;
+    }
+
+    .brand-logo svg {
+      flex-shrink: 0;
+      color: var(--primary);
+    }
+
+    .brand-logo .logo-tag {
+      color: var(--primary);
+    }
+
+    .nav-menu {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-link {
+      font-size: 0.9375rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      position: relative;
+      padding: 6px 0;
+    }
+
+    .nav-link:hover {
+      color: var(--text-main);
+    }
+
+    .nav-link.active {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .hamburger-btn {
+      display: none;
+      background: none;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      width: 44px;
+      height: 44px;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-main);
+      padding: 0;
+    }
+
+    .hamburger-btn:hover {
+      background-color: var(--surface-white);
+    }
+
+    /* Mobile drawer overlay */
+    .mobile-nav-panel {
+      display: none;
+      position: fixed;
+      top: 72px;
+      left: 0;
+      right: 0;
+      background-color: var(--surface-white);
+      border-bottom: 1px solid var(--border-color);
+      padding: 24px;
+      box-shadow: var(--shadow-elevated);
+      flex-direction: column;
+      gap: 16px;
+      z-index: 99;
+    }
+
+    .mobile-nav-panel.open {
+      display: flex;
+    }
+
+    .mobile-nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .mobile-nav-list .nav-link {
+      display: block;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 1.05rem;
+    }
+
+    .mobile-nav-list .nav-link:hover {
+      background-color: var(--bg-neutral);
+    }
+
+    /* ==========================================================================
+       HERO SECTION
+       ========================================================================== */
+    .hero-section {
+      padding-top: 64px;
+      padding-bottom: 80px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.95fr;
+      gap: 48px;
+      align-items: center;
+    }
+
+    .hero-pill-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background-color: var(--surface-white);
+      border: 1px solid var(--border-color);
+      padding: 6px 14px;
+      border-radius: var(--radius-pill);
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+    }
+
+    .hero-pill-badge .pulse-green {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(11, 110, 79, 0.2);
+    }
+
+    .hero-title {
+      font-size: clamp(2.25rem, 4vw, 3.25rem);
+      line-height: 1.15;
+      margin-bottom: 20px;
+      color: var(--text-main);
+    }
+
+    .hero-title .highlight {
+      color: var(--primary);
+      position: relative;
+    }
+
+    .hero-subtitle {
+      font-size: 1.125rem;
+      line-height: 1.6;
+      margin-bottom: 32px;
+      color: var(--text-muted);
+    }
+
+    .hero-cta-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 36px;
+    }
+
+    .hero-context-note {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border-color);
+      padding-top: 20px;
+    }
+
+    .hero-context-note svg {
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+
+    /* Live Product Card (Simulation) */
+    .live-card {
+      background-color: var(--surface-white);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow-hover);
+      position: relative;
+    }
+
+    .live-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 18px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .live-card-title-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .live-card-title {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .live-status-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--primary);
+      background: var(--primary-light);
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+    }
+
+    .live-card-subtitle {
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+    }
+
+    .live-search-sim {
+      position: relative;
+      margin-bottom: 18px;
+    }
+
+    .live-search-input {
+      width: 100%;
+      padding: 10px 14px 10px 38px;
+      background-color: var(--bg-neutral);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      font-size: 0.875rem;
+      color: var(--text-main);
+      transition: border-color var(--transition-fast), background-color var(--transition-fast);
+    }
+
+    .live-search-input:focus {
+      background-color: var(--surface-white);
+      border-color: var(--primary);
+    }
+
+    .live-search-sim svg {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    /* Medicine Items Feed */
+    .medicine-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .medicine-item {
+      padding: 14px;
+      border-radius: var(--radius-md);
+      background-color: var(--bg-neutral);
+      border: 1px solid var(--border-color);
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+    }
+
+    .medicine-item:hover {
+      border-color: #CAD5C9;
+      background-color: #FAFAF7;
+    }
+
+    .med-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+      gap: 12px;
+    }
+
+    .med-name {
+      font-weight: 600;
+      font-size: 0.9375rem;
+      color: var(--text-main);
+    }
+
+    .med-details {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+    }
+
+    .med-pharmacy {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .med-pharmacy svg {
+      flex-shrink: 0;
+      color: var(--primary);
+    }
+
+    .med-prediction {
+      margin-top: 8px;
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pred-good {
+      background-color: rgba(11, 110, 79, 0.08);
+      color: var(--primary-dark);
+    }
+
+    .pred-warning {
+      background-color: rgba(226, 163, 61, 0.12);
+      color: #8C5503;
+    }
+
+    .pred-alert {
+      background-color: rgba(193, 68, 58, 0.1);
+      color: var(--alert-red);
+    }
+
+    .live-card-footer {
+      margin-top: 18px;
+      padding-top: 14px;
+      border-top: 1px dashed var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.775rem;
+      color: var(--text-muted);
+    }
+
+    .footer-live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    /* ==========================================================================
+       SERVICES SECTION
+       ========================================================================== */
+    .services-section {
+      background-color: var(--surface-white);
+      border-top: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+
+    .section-eyebrow {
+      display: inline-block;
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--primary);
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: clamp(1.875rem, 3vw, 2.5rem);
+      margin-bottom: 16px;
+    }
+
+    .section-lead {
+      font-size: 1.0625rem;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+    }
+
+    .service-card {
+      background-color: var(--bg-neutral);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      transition: transform var(--transition-smooth), box-shadow var(--transition-smooth), border-color var(--transition-smooth);
+    }
+
+    .service-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-hover);
+      background-color: var(--surface-white);
+    }
+
+    .service-icon-wrapper {
+      width: 56px;
+      height: 56px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+
+    /* Distinct Card Accents */
+    .card-search .service-icon-wrapper {
+      background-color: var(--primary-light);
+      color: var(--primary);
+    }
+    .card-search:hover { border-color: var(--primary); }
+
+    .card-ai .service-icon-wrapper {
+      background-color: var(--accent-amber-light);
+      color: var(--accent-amber);
+    }
+    .card-ai:hover { border-color: var(--accent-amber); }
+
+    .card-alert .service-icon-wrapper {
+      background-color: #E6F3EE;
+      color: var(--primary-dark);
+    }
+    .card-alert:hover { border-color: var(--primary-dark); }
+
+    .service-title {
+      font-size: 1.35rem;
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+
+    .service-desc {
+      font-size: 0.9375rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+      flex-grow: 1;
+    }
+
+    .service-feature-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      border-top: 1px solid var(--border-color);
+      padding-top: 20px;
+      font-size: 0.875rem;
+      color: var(--text-main);
+    }
+
+    .service-feature-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .service-feature-item svg {
+      flex-shrink: 0;
+      color: var(--primary);
+    }
+
+    /* ==========================================================================
+       ABOUT & METRICS SECTION
+       ========================================================================== */
+    .about-section {
+      background-color: var(--bg-neutral);
+    }
+
+    .about-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 56px;
+      align-items: center;
+    }
+
+    .about-content h2 {
+      font-size: clamp(2rem, 3.2vw, 2.6rem);
+      margin-bottom: 20px;
+    }
+
+    .about-mission-box {
+      background-color: var(--surface-white);
+      border-left: 4px solid var(--primary);
+      border-top: 1px solid var(--border-color);
+      border-right: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
+      padding: 20px;
+      border-radius: var(--radius-sm);
+      margin: 24px 0;
+      font-size: 1rem;
+      color: var(--text-main);
+      font-weight: 500;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    .metric-card {
+      background-color: var(--surface-white);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      transition: transform var(--transition-fast), border-color var(--transition-fast);
+    }
+
+    .metric-card:hover {
+      transform: translateY(-2px);
+      border-color: #CAD5C9;
+    }
+
+    .metric-value {
+      font-family: var(--font-display);
+      font-size: 2.15rem;
+      font-weight: 700;
+      color: var(--primary);
+      line-height: 1.1;
+      margin-bottom: 8px;
+    }
+
+    .metric-title {
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+
+    .metric-desc {
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    /* ==========================================================================
+       CONTACT SECTION
+       ========================================================================== */
+    .contact-section {
+      background-color: var(--surface-white);
+      border-top: 1px solid var(--border-color);
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 48px;
+      align-items: start;
+    }
+
+    .contact-form-card {
+      background-color: var(--bg-neutral);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 36px;
+    }
+
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-label {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .form-label .required {
+      color: var(--alert-red);
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 12px 16px;
+      background-color: var(--surface-white);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      font-size: 0.9375rem;
+      color: var(--text-main);
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    }
+
+    .form-control:focus {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(11, 110, 79, 0.12);
+      outline: none;
+    }
+
+    .form-control.has-error {
+      border-color: var(--alert-red);
+      background-color: #FFF9F9;
+    }
+
+    .form-control.has-error:focus {
+      box-shadow: 0 0 0 3px rgba(193, 68, 58, 0.15);
+    }
+
+    .field-error-message {
+      font-size: 0.8125rem;
+      color: var(--alert-red);
+      display: none;
+      align-items: center;
+      gap: 4px;
+      font-weight: 500;
+    }
+
+    .field-error-message.visible {
+      display: flex;
+    }
+
+    /* Success Alert Box */
+    .form-success-banner {
+      display: none;
+      background-color: var(--primary-light);
+      border: 1px solid rgba(11, 110, 79, 0.3);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      margin-bottom: 24px;
+      color: var(--primary-dark);
+      animation: fadeIn 0.3s ease-out forwards;
+    }
+
+    .form-success-banner.visible {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .form-success-banner svg {
+      flex-shrink: 0;
+      color: var(--primary);
+      margin-top: 2px;
+    }
+
+    .form-success-title {
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 4px;
+      color: var(--primary-dark);
+    }
+
+    .form-success-body {
+      font-size: 0.875rem;
+      color: var(--text-main);
+    }
+
+    /* Contact Details Info Column */
+    .contact-info-panel {
+      padding: 16px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .contact-info-panel h3 {
+      font-size: 1.5rem;
+      margin-bottom: 8px;
+    }
+
+    .contact-methods {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .contact-method-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .contact-method-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-sm);
+      background-color: var(--primary-light);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .contact-method-details h4 {
+      font-size: 0.9375rem;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .contact-method-details p, .contact-method-details a {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    .contact-method-details a:hover {
+      color: var(--primary);
+    }
+
+    .cameroun-flag-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background-color: var(--bg-neutral);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      font-size: 0.875rem;
+      color: var(--text-main);
+      font-weight: 500;
+    }
+
+    .flag-stripes {
+      display: inline-flex;
+      width: 24px;
+      height: 16px;
+      border-radius: 2px;
+      overflow: hidden;
+      box-shadow: 0 0 1px rgba(0,0,0,0.3);
+    }
+    .flag-green { width: 33.3%; background: #007A5E; }
+    .flag-red { width: 33.4%; background: #CE1126; position: relative; display: flex; align-items: center; justify-content: center; }
+    .flag-red::after { content: '★'; color: #FCD116; font-size: 7px; line-height: 1; }
+    .flag-yellow { width: 33.3%; background: #FCD116; }
+
+    /* ==========================================================================
+       FOOTER
+       ========================================================================== */
+    .site-footer {
+      background-color: var(--bg-neutral);
+      border-top: 1px solid var(--border-color);
+      padding-top: 48px;
+      padding-bottom: 48px;
+      margin-top: auto;
+    }
+
+    .footer-content {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .footer-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 24px;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      font-size: 0.9375rem;
+      color: var(--text-muted);
+    }
+
+    .footer-links a:hover {
+      color: var(--primary);
+    }
+
+    .footer-bottom {
+      border-top: 1px solid var(--border-color);
+      padding-top: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    /* ==========================================================================
+       ANIMATIONS & PREFERS-REDUCED-MOTION
+       ========================================================================== */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    /* ==========================================================================
+       RESPONSIVE BREAKPOINTS
+       ========================================================================== */
+    @media (max-width: 1024px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+      .services-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+      .about-container {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+      .contact-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+    }
+
+    @media (max-width: 860px) {
+      .nav-menu, .nav-actions .btn-secondary {
+        display: none;
+      }
+      .hamburger-btn {
+        display: flex;
+      }
+      .section-spacing {
+        padding-top: 64px;
+        padding-bottom: 64px;
+      }
+    }
+
+    @media (max-width: 580px) {
+      .container {
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+      .hero-cta-group {
+        flex-direction: column;
+        width: 100%;
+      }
+      .hero-cta-group .btn {
+        width: 100%;
+      }
+      .metrics-grid {
+        grid-template-columns: 1fr;
+      }
+      .contact-form-card {
+        padding: 24px 18px;
+      }
+      .footer-top, .footer-bottom {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .footer-links {
+        flex-direction: column;
+        gap: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==========================================================================
+       1. NAVIGATION BAR (STICKY)
+       ========================================================================== -->
+  <header class="site-header" id="header">
+    <div class="container nav-container">
+      <a href="#accueil" class="brand-logo" id="brand-logo" aria-label="PharmDispo237 Accueil">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"></path>
+          <path d="m8.5 8.5 7 7"></path>
+          <path d="M16 4h4v4"></path>
+        </svg>
+        <span>PharmDispo<span class="logo-tag">237</span></span>
+      </a>
+
+      <!-- Desktop Nav Menu -->
+      <nav aria-label="Navigation principale">
+        <ul class="nav-menu">
+          <li><a href="#accueil" class="nav-link active">Accueil</a></li>
+          <li><a href="#services" class="nav-link">Services</a></li>
+          <li><a href="#a-propos" class="nav-link">À propos</a></li>
+          <li><a href="#contact" class="nav-link">Contact</a></li>
+        </ul>
+      </nav>
+
+      <!-- Action Buttons & Hamburger -->
+      <div class="nav-actions">
+        <a href="#contact" class="btn btn-secondary" id="btn-header-contact">Nous contacter</a>
+        
+        <button type="button" 
+                class="hamburger-btn" 
+                id="hamburger-btn" 
+                aria-label="Ouvrir le menu de navigation" 
+                aria-expanded="false" 
+                aria-controls="mobile-nav-panel">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="hamburger-icon" aria-hidden="true">
+            <line x1="4" y1="6" x2="20" y2="6"></line>
+            <line x1="4" y1="12" x2="20" y2="12"></line>
+            <line x1="4" y1="18" x2="20" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div class="mobile-nav-panel" id="mobile-nav-panel" aria-hidden="true">
+      <ul class="mobile-nav-list">
+        <li><a href="#accueil" class="nav-link mobile-link">Accueil</a></li>
+        <li><a href="#services" class="nav-link mobile-link">Services</a></li>
+        <li><a href="#a-propos" class="nav-link mobile-link">À propos</a></li>
+        <li><a href="#contact" class="nav-link mobile-link">Contact</a></li>
+      </ul>
+      <div style="padding-top: 12px; border-top: 1px solid var(--border-color);">
+        <a href="#contact" class="btn btn-primary mobile-link" style="width: 100%;">Nous contacter</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <!-- ==========================================================================
+         2. HERO SECTION
+         ========================================================================== -->
+    <section class="hero-section" id="accueil">
+      <div class="container hero-grid">
+        <div class="hero-text-content">
+          <div class="hero-pill-badge">
+            <span class="pulse-green" aria-hidden="true"></span>
+            <span>Réseau actif : Yaoundé & Douala</span>
+          </div>
+
+          <h1 class="hero-title">
+            Ne cherchez plus un médicament au hasard : sachez <span class="highlight">instantanément</span> où il est disponible.
+          </h1>
+
+          <p class="hero-subtitle">
+            PharmDispo237 connecte les patients aux officines du Cameroun en temps réel. Grâce à notre modèle d'IA prédictive, nous anticipons les ruptures de stock jusqu'à deux semaines à l'avance pour sécuriser vos traitements vitaux.
+          </p>
+
+          <div class="hero-cta-group">
+            <a href="#services" class="btn btn-primary" id="btn-hero-learn">
+              <span>Découvrir comment ça marche</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M5 12h14"></path>
+                <path d="m12 5 7 7-7 7"></path>
+              </svg>
+            </a>
+            <a href="#contact" class="btn btn-secondary" id="btn-hero-pharmacist">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              <span>Je suis pharmacien(ne)</span>
+            </a>
+          </div>
+
+          <div class="hero-context-note">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              <path d="m9 12 2 2 4-4"></path>
+            </svg>
+            <span>Données synchronisées quotidiennement avec l'Ordre National des Pharmaciens du Cameroun.</span>
+          </div>
+        </div>
+
+        <!-- Real-Time Product Status Card Visual -->
+        <div class="hero-visual-wrapper">
+          <div class="live-card" id="live-stock-monitor">
+            <div class="live-card-header">
+              <div class="live-card-title-group">
+                <div class="live-card-title">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary);" aria-hidden="true">
+                    <path d="M2 12h5l3 7 4-14 3 7h5"></path>
+                  </svg>
+                  <span>Disponibilité en direct</span>
+                </div>
+                <div class="live-card-subtitle">Exemple d'interrogation en temps réel des officines</div>
+              </div>
+              <span class="live-status-indicator">
+                <span class="badge-dot" style="background-color: var(--primary);"></span>
+                Live 237
+              </span>
+            </div>
+
+            <!-- Simulation Search Filter -->
+            <div class="live-search-sim">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <input type="text" 
+                     id="med-filter-input" 
+                     class="live-search-input" 
+                     placeholder="Filtrer un médicament (ex. Coartem, Insuline, Amoxicilline)..." 
+                     aria-label="Filtrer les médicaments affichés en direct">
+            </div>
+
+            <!-- 4 Items with exact status badges: Disponible / Stock faible / Rupture probable -->
+            <div class="medicine-list" id="medicine-feed">
+              
+              <!-- Item 1: Disponible -->
+              <div class="medicine-item" data-name="coartem antipaludeen">
+                <div class="med-top-row">
+                  <div>
+                    <span class="med-name">Coartem 20/120 mg</span>
+                    <span style="font-size: 0.75rem; color: var(--text-muted); margin-left: 6px;">(Antipaludique)</span>
+                  </div>
+                  <span class="badge badge-available">
+                    <span class="badge-dot"></span>
+                    Disponible
+                  </span>
+                </div>
+                <div class="med-details">
+                  <div class="med-pharmacy">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
+                      <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    <span>Pharmacie du Centre, Yaoundé</span>
+                  </div>
+                  <span style="font-weight: 500;">48 boîtes en stock</span>
+                </div>
+                <div class="med-prediction pred-good">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                  </svg>
+                  <span>Prédiction IA : Approvisionnement stable pour les 21 prochains jours</span>
+                </div>
+              </div>
+
+              <!-- Item 2: Stock faible -->
+              <div class="medicine-item" data-name="amoxicilline antibiotique">
+                <div class="med-top-row">
+                  <div>
+                    <span class="med-name">Amoxicilline 500 mg</span>
+                    <span style="font-size: 0.75rem; color: var(--text-muted); margin-left: 6px;">(Antibiotique)</span>
+                  </div>
+                  <span class="badge badge-warning">
+                    <span class="badge-dot"></span>
+                    Stock faible
+                  </span>
+                </div>
+                <div class="med-details">
+                  <div class="med-pharmacy">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
+                      <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    <span>Pharmacie de la Liberté, Douala</span>
+                  </div>
+                  <span style="font-weight: 600; color: #925C08;">4 boîtes restantes</span>
+                </div>
+                <div class="med-prediction pred-warning">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                  </svg>
+                  <span>Prédiction IA : Risque de rupture sous 48h selon la vélocité des ventes</span>
+                </div>
+              </div>
+
+              <!-- Item 3: Rupture probable -->
+              <div class="medicine-item" data-name="insuline diabete">
+                <div class="med-top-row">
+                  <div>
+                    <span class="med-name">Insuline Mixtard 100 UI</span>
+                    <span style="font-size: 0.75rem; color: var(--text-muted); margin-left: 6px;">(Diabète)</span>
+                  </div>
+                  <span class="badge badge-danger">
+                    <span class="badge-dot"></span>
+                    Rupture probable
+                  </span>
+                </div>
+                <div class="med-details">
+                  <div class="med-pharmacy">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
+                      <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    <span>Pharmacie de l'Aéroport, Douala</span>
+                  </div>
+                  <span style="font-weight: 600; color: var(--alert-red);">1 flacon (réservé)</span>
+                </div>
+                <div class="med-prediction pred-alert">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                  </svg>
+                  <span>Alerte IA : Tension nationale détectée chez les 3 principaux grossistes</span>
+                </div>
+              </div>
+
+              <!-- Item 4: Disponible -->
+              <div class="medicine-item" data-name="paracetamol doliprane antalgique">
+                <div class="med-top-row">
+                  <div>
+                    <span class="med-name">Paracétamol 1g Effervescent</span>
+                    <span style="font-size: 0.75rem; color: var(--text-muted); margin-left: 6px;">(Antalgique)</span>
+                  </div>
+                  <span class="badge badge-available">
+                    <span class="badge-dot"></span>
+                    Disponible
+                  </span>
+                </div>
+                <div class="med-details">
+                  <div class="med-pharmacy">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
+                      <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    <span>Pharmacie d'Akwa, Douala</span>
+                  </div>
+                  <span style="font-weight: 500;">120 boîtes en stock</span>
+                </div>
+                <div class="med-prediction pred-good">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                  </svg>
+                  <span>Prédiction IA : Couverture optimale sur toute la zone métropolitaine</span>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="live-card-footer">
+              <div class="footer-live-badge">
+                <span class="badge-dot" style="background-color: var(--primary);"></span>
+                <span>Actualisation automatique continue</span>
+              </div>
+              <span id="live-item-count">4 médicaments suivis</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         3. SERVICES SECTION (3 CARDS WITH DISTINCT ACCENT COLORS)
+         ========================================================================== -->
+    <section class="section-spacing services-section" id="services">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-eyebrow">Nos solutions intégrées</span>
+          <h2 class="section-title">Une réponse technologique aux défis pharmaceutiques</h2>
+          <p class="section-lead">
+            PharmDispo237 combine la cartographie instantanée pour les usagers et l'intelligence prédictive pour les professionnels de santé du Cameroun.
+          </p>
+        </div>
+
+        <div class="services-grid">
+          
+          <!-- Carte 1 : Recherche & localisation (Accent Primaire Vert #0B6E4F) -->
+          <div class="service-card card-search" id="service-recherche">
+            <div class="service-icon-wrapper" aria-hidden="true">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                <path d="M11 8v6"></path>
+                <path d="M8 11h6"></path>
+              </svg>
+            </div>
+            <h3 class="service-title">Recherche & géolocalisation</h3>
+            <p class="service-desc">
+              Le patient saisit sa molécule ou son ordonnance et identifie immédiatement les officines les plus proches qui disposent du médicament en stock garanti, évitant ainsi les déplacements inutiles en ville.
+            </p>
+            <ul class="service-feature-list">
+              <li class="service-feature-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span>Rayon kilométrique et itinéraire direct</span>
+              </li>
+              <li class="service-feature-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span>Filtrage par pharmacie de garde 24h/24</span>
+              </li>
+              <li class="service-feature-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span>Accès sans frais pour chaque citoyen</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Carte 2 : Prédiction des ruptures (Accent Ambre #E2A33D) -->
+          <div class="service-card card-ai" id="service-prediction">
+            <div class="service-icon-wrapper" aria-hidden="true">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2v4"></path>
+                <path d="M12 18v4"></path>
+                <path d="M4.93 4.93l2.83 2.83"></path>
+                <path d="M16.24 16.24l2.83 2.83"></path>
+                <path d="M2 12h4"></path>
+                <path d="M18 12h4"></path>
+                <path d="M4.93 19.07l2.83-2.83"></path>
+                <path d="M16.24 7.76l2.83-2.83"></path>
+              </svg>
+            </div>
+            <h3 class="service-title">Prédiction IA des pénuries</h3>
+            <p class="service-desc">
+              Notre moteur algorithmique analyse en continu les historiques de dispensation, les tendances épidémiques saisonnières et les flux d'importation pour anticiper une rupture 7 à 14 jours avant son apparition critique.
+            </p>
+            <ul class="service-feature-list">
+              <li class="service-feature-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span>Anticipation 7 à 14 jours à l'avance</span>
+              </li>
+              <li class="service-feature-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span>Prise en compte des pics épidémiques (paludisme, etc.)</span>
+              </li>
+              <li class="service-feature-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span>Score de fiabilité et d'urgence transparent</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Carte 3 : Alertes pharmacien (Accent Vert Foncé #084E38) -->
+          <div class="service-card card-alert" id="service-alertes">
+            <div class="service-icon-wrapper" aria-hidden="true">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+              </svg>
+            </div>
+            <h3 class="service-title">Alertes & réapprovisionnement</h3>
+            <p class="service-desc">
+              Le pharmacien reçoit une notification proactive avec un bon de commande suggéré vers les grossistes-répartiteurs (UCAPH, Laborex, Cename...) avant que son stock de sécurité ne soit compromis.
+            </p>
+            <ul class="service-feature-list">
+              <li class="service-feature-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span>Notifications SMS et tableau de bord sécurisé</span>
+              </li>
+              <li class="service-feature-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span>Recommandation de volumes d'achat optimaux</span>
+              </li>
+              <li class="service-feature-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span>Zéro surstockage, trésorerie d'officine protégée</span>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         4. ABOUT SECTION & KEY INDICATORS
+         ========================================================================== -->
+    <section class="section-spacing about-section" id="a-propos">
+      <div class="container about-container">
+        <div class="about-content">
+          <span class="section-eyebrow">Notre Mission de Santé Publique</span>
+          <h2>Réduire drastiquement le délai entre une ordonnance et un traitement disponible.</h2>
+          
+          <div class="about-mission-box">
+            « Au Cameroun, un patient passe en moyenne 3 à 5 heures à parcourir plusieurs quartiers pour trouver un traitement prescrit. PharmDispo237 transforme cette errance en un accès immédiat et prédictif grâce à la solidarité du réseau pharmaceutique. »
+          </div>
+
+          <p style="margin-bottom: 24px;">
+            Conçu en étroite collaboration avec les pharmaciens titulaires, notre outil respecte scrupuleusement la déontologie médicale et la confidentialité des dossiers patients. Nous bâtissons l'infrastructure numérique qui protège le circuit officiel du médicament contre les filières parallèles et les ruptures évitables.
+          </p>
+
+          <div class="cameroun-flag-badge">
+            <span class="flag-stripes" aria-label="Drapeau du Cameroun">
+              <span class="flag-green"></span>
+              <span class="flag-red"></span>
+              <span class="flag-yellow"></span>
+            </span>
+            <span>Une innovation conçue et opérée localement pour le système de santé camerounais</span>
+          </div>
+        </div>
+
+        <!-- 4 Encadrés Indicateurs Clés -->
+        <div class="metrics-grid">
+          
+          <!-- Indicateur 1 -->
+          <div class="metric-card">
+            <div class="metric-value">7 à 14 j.</div>
+            <div class="metric-title">Horizon d'anticipation IA</div>
+            <div class="metric-desc">Délai moyen d'alerte précoce pour commander avant la rupture effective en rayon.</div>
+          </div>
+
+          <!-- Indicateur 2 -->
+          <div class="metric-card">
+            <div class="metric-value">2 Villes</div>
+            <div class="metric-title">Métropoles pilotes</div>
+            <div class="metric-desc">Déploiement initial à Douala et Yaoundé avant l'extension nationale en 2027.</div>
+          </div>
+
+          <!-- Indicateur 3 -->
+          <div class="metric-card">
+            <div class="metric-value">100%</div>
+            <div class="metric-title">Gratuit pour les patients</div>
+            <div class="metric-desc">Recherche libre sans frais ni abonnement pour toutes les familles camerounaises.</div>
+          </div>
+
+          <!-- Indicateur 4 -->
+          <div class="metric-card">
+            <div class="metric-value">&lt; 2 min</div>
+            <div class="metric-title">Mise à jour d'officine</div>
+            <div class="metric-desc">Synchronisation automatique fluide avec les logiciels de gestion d'officine usuels.</div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         5. CONTACT SECTION & FUNCTIONAL FORM
+         ========================================================================== -->
+    <section class="section-spacing contact-section" id="contact">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-eyebrow">Rejoignez l'initiative</span>
+          <h2 class="section-title">Prenons contact</h2>
+          <p class="section-lead">
+            Vous êtes pharmacien, distributeur, praticien ou usager ? Posez vos questions ou rejoignez le programme pilote.
+          </p>
+        </div>
+
+        <div class="contact-grid">
+          
+          <!-- Formulaire fonctionnel en JS pur -->
+          <div class="contact-form-card">
+            
+            <!-- Success Banner (Animated client-side feedback) -->
+            <div class="form-success-banner" id="form-success-banner" role="alert" aria-live="polite">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+              <div>
+                <div class="form-success-title">Message transmis avec succès !</div>
+                <div class="form-success-body">
+                  Merci, <strong id="success-user-name"></strong>. Notre équipe de coordination à Douala vous recontactera sous 24h ouvrées.
+                </div>
+              </div>
+            </div>
+
+            <form id="contact-form" class="contact-form" novalidate>
+              
+              <!-- Nom -->
+              <div class="form-group">
+                <label for="contact-name" class="form-label">
+                  Nom et prénom <span class="required" aria-hidden="true">*</span>
+                </label>
+                <input type="text" 
+                       id="contact-name" 
+                       name="name" 
+                       class="form-control" 
+                       placeholder="Ex. Dr. Paul Ngoa ou Amina Bello" 
+                       required 
+                       aria-required="true" 
+                       aria-describedby="error-name">
+                <span class="field-error-message" id="error-name" role="alert">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                  </svg>
+                  <span>Veuillez renseigner votre nom complet.</span>
+                </span>
+              </div>
+
+              <!-- Email -->
+              <div class="form-group">
+                <label for="contact-email" class="form-label">
+                  Adresse email <span class="required" aria-hidden="true">*</span>
+                </label>
+                <input type="email" 
+                       id="contact-email" 
+                       name="email" 
+                       class="form-control" 
+                       placeholder="exemple@domaine.cm" 
+                       required 
+                       aria-required="true" 
+                       aria-describedby="error-email">
+                <span class="field-error-message" id="error-email" role="alert">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                  </svg>
+                  <span>Veuillez saisir une adresse email valide (ex. nom@domaine.cm).</span>
+                </span>
+              </div>
+
+              <!-- Sélecteur "Vous êtes" -->
+              <div class="form-group">
+                <label for="contact-role" class="form-label">
+                  Vous êtes <span class="required" aria-hidden="true">*</span>
+                </label>
+                <select id="contact-role" name="role" class="form-control" required aria-required="true">
+                  <option value="Patient" selected>Patient ou proche aidant</option>
+                  <option value="Pharmacien">Pharmacien(ne) d'officine</option>
+                  <option value="Grossiste-répartiteur">Grossiste-répartiteur pharmaceutique</option>
+                  <option value="Institution">Institution médicale / Ministère de la Santé</option>
+                </select>
+              </div>
+
+              <!-- Message -->
+              <div class="form-group">
+                <label for="contact-message" class="form-label">
+                  Votre message <span class="required" aria-hidden="true">*</span>
+                </label>
+                <textarea id="contact-message" 
+                          name="message" 
+                          rows="4" 
+                          class="form-control" 
+                          placeholder="Décrivez votre demande, votre officine ou la ville d'intérêt..." 
+                          required 
+                          aria-required="true" 
+                          aria-describedby="error-message"></textarea>
+                <span class="field-error-message" id="error-message" role="alert">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                  </svg>
+                  <span>Veuillez entrer un message détaillé (au moins 8 caractères).</span>
+                </span>
+              </div>
+
+              <!-- Submit Button -->
+              <button type="submit" class="btn btn-primary" id="btn-submit-contact" style="width: 100%; padding: 14px 20px;">
+                <span id="submit-spinner" style="display:none;" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="animation: spin 0.8s linear infinite;">
+                    <circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle>
+                    <path d="M12 2a10 10 0 0 1 10 10"></path>
+                  </svg>
+                </span>
+                <span id="submit-text">Envoyer mon message</span>
+              </button>
+
+            </form>
+          </div>
+
+          <!-- Coordonnées de contact officielles -->
+          <div class="contact-info-panel">
+            <div>
+              <h3>Permanence PharmDispo237</h3>
+              <p>Notre équipe support et relations officines est à votre écoute du lundi au samedi de 07h30 à 19h00.</p>
+            </div>
+
+            <div class="contact-methods">
+              
+              <!-- Email -->
+              <div class="contact-method-card">
+                <div class="contact-method-icon" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+                  </svg>
+                </div>
+                <div class="contact-method-details">
+                  <h4>Courriel direct</h4>
+                  <a href="mailto:contact@pharmdispo237.cm">contact@pharmdispo237.cm</a>
+                  <p style="font-size: 0.775rem;">Réponse garantie sous 24h</p>
+                </div>
+              </div>
+
+              <!-- Téléphone -->
+              <div class="contact-method-card">
+                <div class="contact-method-icon" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                  </svg>
+                </div>
+                <div class="contact-method-details">
+                  <h4>Ligne téléphonique & WhatsApp</h4>
+                  <p><a href="tel:+237699002370">+237 699 00 23 70</a></p>
+                  <p><a href="tel:+237233421020">+237 233 42 10 20 (Bureau Douala)</a></p>
+                </div>
+              </div>
+
+              <!-- Adresse à Douala -->
+              <div class="contact-method-card">
+                <div class="contact-method-icon" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                  </svg>
+                </div>
+                <div class="contact-method-details">
+                  <h4>Siège opérationnel</h4>
+                  <p>Immeuble Horizon Santé, 3e étage</p>
+                  <p>Rue Pau, Quartier Akwa, Douala — Cameroun</p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ==========================================================================
+       6. FOOTER
+       ========================================================================== -->
+  <footer class="site-footer" id="footer">
+    <div class="container footer-content">
+      <div class="footer-top">
+        <a href="#accueil" class="brand-logo" aria-label="PharmDispo237 Retour haut">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"></path>
+            <path d="m8.5 8.5 7 7"></path>
+            <path d="M16 4h4v4"></path>
+          </svg>
+          <span>PharmDispo<span class="logo-tag">237</span></span>
+        </a>
+
+        <ul class="footer-links">
+          <li><a href="#accueil">Accueil</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#a-propos">À propos</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-bottom">
+        <div>
+          &copy; 2026 PharmDispo237. Tous droits réservés. Dédié à la santé publique en République du Cameroun.
+        </div>
+        <div style="display: flex; gap: 16px; font-size: 0.8125rem;">
+          <span>Conforme aux directives du MINSANTE</span>
+          <span>•</span>
+          <span>Données chiffrées de bout en bout</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==========================================================================
+       JAVASCRIPT (PURE JS, AUTONOME)
+       ========================================================================== -->
+  <script>
+    (function () {
+      'use strict';
+
+      // --- 1. Gestion du Menu Hamburger Accessible ---
+      const hamburgerBtn = document.getElementById('hamburger-btn');
+      const mobileNavPanel = document.getElementById('mobile-nav-panel');
+      const mobileLinks = document.querySelectorAll('.mobile-link');
+
+      function toggleMobileMenu() {
+        const isExpanded = hamburgerBtn.getAttribute('aria-expanded') === 'true';
+        hamburgerBtn.setAttribute('aria-expanded', !isExpanded);
+        hamburgerBtn.setAttribute('aria-label', isExpanded ? 'Ouvrir le menu de navigation' : 'Fermer le menu de navigation');
+        mobileNavPanel.classList.toggle('open', !isExpanded);
+        mobileNavPanel.setAttribute('aria-hidden', isExpanded);
+      }
+
+      function closeMobileMenu() {
+        hamburgerBtn.setAttribute('aria-expanded', 'false');
+        hamburgerBtn.setAttribute('aria-label', 'Ouvrir le menu de navigation');
+        mobileNavPanel.classList.remove('open');
+        mobileNavPanel.setAttribute('aria-hidden', 'true');
+      }
+
+      if (hamburgerBtn && mobileNavPanel) {
+        hamburgerBtn.addEventListener('click', toggleMobileMenu);
+
+        mobileLinks.forEach(function (link) {
+          link.addEventListener('click', closeMobileMenu);
+        });
+
+        // Close mobile drawer when clicking outside
+        document.addEventListener('click', function (event) {
+          if (!hamburgerBtn.contains(event.target) && !mobileNavPanel.contains(event.target)) {
+            closeMobileMenu();
+          }
+        });
+
+        // Close on ESC key
+        document.addEventListener('keydown', function (event) {
+          if (event.key === 'Escape') {
+            closeMobileMenu();
+          }
+        });
+      }
+
+      // --- 2. Navigation Active State on Scroll ---
+      const sections = document.querySelectorAll('section[id]');
+      const navLinks = document.querySelectorAll('.nav-menu .nav-link');
+
+      function highlightNavigation() {
+        const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+
+        sections.forEach(function (current) {
+          const sectionHeight = current.offsetHeight;
+          const sectionTop = current.offsetTop - 120;
+          const sectionId = current.getAttribute('id');
+
+          if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
+            navLinks.forEach(function (link) {
+              link.classList.remove('active');
+              if (link.getAttribute('href') === '#' + sectionId) {
+                link.classList.add('active');
+              }
+            });
+          }
+        });
+      }
+
+      window.addEventListener('scroll', highlightNavigation, { passive: true });
+
+      // --- 3. Filtrage en direct des médicaments (Live Card Simulation) ---
+      const filterInput = document.getElementById('med-filter-input');
+      const medicineItems = document.querySelectorAll('.medicine-item');
+      const itemCountSpan = document.getElementById('live-item-count');
+
+      if (filterInput && medicineItems.length > 0) {
+        filterInput.addEventListener('input', function (e) {
+          const query = e.target.value.toLowerCase().trim();
+          let visibleCount = 0;
+
+          medicineItems.forEach(function (item) {
+            const dataKeywords = item.getAttribute('data-name') || '';
+            const textContent = item.textContent.toLowerCase();
+
+            if (dataKeywords.includes(query) || textContent.includes(query)) {
+              item.style.display = 'block';
+              visibleCount++;
+            } else {
+              item.style.display = 'none';
+            }
+          });
+
+          if (itemCountSpan) {
+            itemCountSpan.textContent = visibleCount + (visibleCount > 1 ? ' médicaments affichés' : ' médicament affiché');
+          }
+        });
+      }
+
+      // --- 4. Validation et Soumission du Formulaire Contact ---
+      const contactForm = document.getElementById('contact-form');
+      const nameInput = document.getElementById('contact-name');
+      const emailInput = document.getElementById('contact-email');
+      const messageInput = document.getElementById('contact-message');
+      const roleSelect = document.getElementById('contact-role');
+
+      const errorName = document.getElementById('error-name');
+      const errorEmail = document.getElementById('error-email');
+      const errorMessage = document.getElementById('error-message');
+
+      const successBanner = document.getElementById('form-success-banner');
+      const successUserName = document.getElementById('success-user-name');
+      const submitBtn = document.getElementById('btn-submit-contact');
+      const submitSpinner = document.getElementById('submit-spinner');
+      const submitText = document.getElementById('submit-text');
+
+      // Email regex validation standard RFC
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      function validateName() {
+        const val = nameInput.value.trim();
+        const isValid = val.length >= 2;
+        if (!isValid) {
+          nameInput.classList.add('has-error');
+          errorName.classList.add('visible');
+          nameInput.setAttribute('aria-invalid', 'true');
+        } else {
+          nameInput.classList.remove('has-error');
+          errorName.classList.remove('visible');
+          nameInput.setAttribute('aria-invalid', 'false');
+        }
+        return isValid;
+      }
+
+      function validateEmail() {
+        const val = emailInput.value.trim();
+        const isValid = emailRegex.test(val);
+        if (!isValid) {
+          emailInput.classList.add('has-error');
+          errorEmail.classList.add('visible');
+          emailInput.setAttribute('aria-invalid', 'true');
+        } else {
+          emailInput.classList.remove('has-error');
+          errorEmail.classList.remove('visible');
+          emailInput.setAttribute('aria-invalid', 'false');
+        }
+        return isValid;
+      }
+
+      function validateMessage() {
+        const val = messageInput.value.trim();
+        const isValid = val.length >= 8;
+        if (!isValid) {
+          messageInput.classList.add('has-error');
+          errorMessage.classList.add('visible');
+          messageInput.setAttribute('aria-invalid', 'true');
+        } else {
+          messageInput.classList.remove('has-error');
+          errorMessage.classList.remove('visible');
+          messageInput.setAttribute('aria-invalid', 'false');
+        }
+        return isValid;
+      }
+
+      // Live validation on blur & input
+      nameInput.addEventListener('blur', validateName);
+      nameInput.addEventListener('input', function () {
+        if (nameInput.classList.contains('has-error')) validateName();
+      });
+
+      emailInput.addEventListener('blur', validateEmail);
+      emailInput.addEventListener('input', function () {
+        if (emailInput.classList.contains('has-error')) validateEmail();
+      });
+
+      messageInput.addEventListener('blur', validateMessage);
+      messageInput.addEventListener('input', function () {
+        if (messageInput.classList.contains('has-error')) validateMessage();
+      });
+
+      // Handle Form Submit
+      contactForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const isNameValid = validateName();
+        const isEmailValid = validateEmail();
+        const isMsgValid = validateMessage();
+
+        if (!isNameValid || !isEmailValid || !isMsgValid) {
+          // Focus first invalid element
+          if (!isNameValid) nameInput.focus();
+          else if (!isEmailValid) emailInput.focus();
+          else if (!isMsgValid) messageInput.focus();
+          return;
+        }
+
+        // Simulate network submission
+        const submittedName = nameInput.value.trim();
+        submitBtn.disabled = true;
+        submitSpinner.style.display = 'inline-block';
+        submitText.textContent = 'Transmission en cours...';
+
+        setTimeout(function () {
+          submitBtn.disabled = false;
+          submitSpinner.style.display = 'none';
+          submitText.textContent = 'Envoyer mon message';
+
+          // Show success message
+          if (successUserName) {
+            successUserName.textContent = submittedName;
+          }
+          successBanner.classList.add('visible');
+          successBanner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+          // Reset form fields
+          contactForm.reset();
+          nameInput.classList.remove('has-error');
+          emailInput.classList.remove('has-error');
+          messageInput.classList.remove('has-error');
+        }, 700);
+      });
+
+    })();
+  </script>
+</body>
+</html>

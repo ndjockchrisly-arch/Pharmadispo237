@@ -1,0 +1,6 @@
+{
+  "name": "PharmDispo237",
+  "description": "Suivi de la disponibilité des médicaments en pharmacie et prédiction des ruptures de stock par IA au Cameroun.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
